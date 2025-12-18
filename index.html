@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frontrunner | Front-End Development Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+body { line-height:1.6; color:#333; background:#f0f4ff; scroll-behavior:smooth; display:flex; flex-direction:column; min-height:100vh; }
+header { background:#4f46e5; color:#fff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+header h1 { font-size:1.8rem; }
+nav a { color:#fff; margin-left:1rem; text-decoration:none; font-weight:600; padding:0.6rem 1.5rem; border-radius:8px; transition:all 0.3s ease; background: rgba(255,255,255,0.1);}
+nav a:hover { background:#fff; color:#4f46e5; transform:scale(1.05); box-shadow:0 6px 15px rgba(0,0,0,0.15); }
+main { flex:1; }
+.hero { background: linear-gradient(120deg, #6366f1, #4f46e5); color:#fff; text-align:center; padding:6rem 2rem; }
+.hero h2 { font-size:2.8rem; margin-bottom:1rem; opacity:0; transform:translateY(30px); transition: all 1s ease-out; }
+.hero p { font-size:1.2rem; margin-bottom:2rem; opacity:0; transform:translateY(30px); transition: all 1s ease-out 0.3s; }
+.info-section { max-width:1000px; margin:4rem auto; padding:0 2rem; }
+.info-section h3 { color:#4f46e5; margin-bottom:1rem; font-size:1.6rem; }
+.info-section p { margin-bottom:2rem; color:#555; font-size:1rem; line-height:1.6; }
+footer { background:#1f2937; color:#fff; text-align:center; padding:2rem; }
+@media(max-width:640px){ .hero h2{font-size:2rem;} .hero p{font-size:1rem;} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Frontrunner</h1>
+  <nav>
+    <a href="services.html">Services</a>
+  </nav>
+</header>
+
+<main>
+<section class="hero">
+  <h2>Professional Front-End Development</h2>
+  <p>We build fast, responsive, and visually stunning websites that elevate your brand. Explore our services to get started!</p>
+</section>
+
+<section class="info-section">
+  <h3>Our Mission</h3>
+  <p>At Frontrunner, we specialize in creating front-end websites that are not only beautiful but also highly functional. We prioritize performance, user experience, and responsive design to help your business thrive online.</p>
+
+  <h3>Why Choose Us?</h3>
+  <p>Our team delivers high-quality front-end solutions with attention to detail, innovative design, and cutting-edge technologies. From small projects to full-scale business websites, we tailor solutions that meet your needs.</p>
+</section>
+</main>
+
+<footer>
+  <p>&copy; 2025 Frontrunner. All rights reserved.</p>
+</footer>
+
+<script>
+// Scroll animation for hero
+const heroElements = document.querySelectorAll('.hero h2, .hero p');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.style.opacity = 1;
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold:0.2 });
+
+heroElements.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

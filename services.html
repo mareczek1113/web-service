@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services | Frontrunner</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+body { background:#f0f4ff; color:#333; scroll-behavior:smooth; display:flex; flex-direction:column; min-height:100vh; }
+header { background:#4f46e5; color:#fff; padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+header h1 { font-size:1.8rem; }
+nav a { color:#fff; margin-left:1rem; text-decoration:none; font-weight:600; padding:0.6rem 1.4rem; border-radius:8px; transition:all 0.3s ease; background: rgba(255,255,255,0.1);}
+nav a:hover { background:#fff; color:#4f46e5; transform:scale(1.05); box-shadow:0 6px 15px rgba(0,0,0,0.15); }
+
+main { flex:1; max-width:1200px; margin:4rem auto; padding:0 2rem; }
+h2 { text-align:center; color:#4f46e5; font-size:2rem; margin-bottom:2rem; }
+
+.currency-container { text-align:center; margin-bottom:2rem; }
+.currency-container label { margin-right:0.5rem; font-weight:600; }
+.currency-container select { padding:0.5rem; border-radius:8px; border:1px solid #ccc; }
+
+.services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:2rem; }
+.service-card { background:#fff; padding:2rem; border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,0.05); text-align:center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.service-card:hover { transform:translateY(-5px); box-shadow:0 20px 50px rgba(0,0,0,0.1); cursor:pointer; }
+.service-card h3 { color:#4f46e5; margin-bottom:1rem; }
+.service-card p { margin-bottom:1rem; color:#555; font-size:1rem; }
+.price { font-size:1.4rem; font-weight:600; margin-bottom:0.5rem; }
+button.select-plan { padding:0.6rem 1.2rem; border:none; border-radius:8px; background: linear-gradient(90deg, #4f46e5, #6366f1); color:#fff; font-weight:600; cursor:pointer; transition:0.3s; }
+button.select-plan:hover { background: linear-gradient(90deg, #6366f1, #4f46e5); transform: translateY(-2px); }
+
+footer { text-align:center; padding:2rem; background:#1f2937; color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Frontrunner</h1>
+  <nav>
+    <a href="index.html">Home</a>
+  </nav>
+</header>
+
+<main>
+<h2>Choose Your Plan</h2>
+
+<div class="currency-container">
+  <label for="currencySelect">Select Currency:</label>
+  <select id="currencySelect">
+    <option value="GBP">£ GBP</option>
+    <option value="USD">$ USD</option>
+    <option value="EUR">€ EUR</option>
+  </select>
+</div>
+
+<div class="services-grid">
+  <div class="service-card" data-base-price="80" data-plan="Basic Plan">
+    <h3>Basic Plan</h3>
+    <p>Perfect for small personal projects.</p>
+    <div class="price">£80</div>
+    <button class="select-plan">Select Plan</button>
+  </div>
+  <div class="service-card" data-base-price="140" data-plan="Standard Plan">
+    <h3>Standard Plan</h3>
+    <p>Ideal for small businesses or startups.</p>
+    <div class="price">£140</div>
+    <button class="select-plan">Select Plan</button>
+  </div>
+  <div class="service-card" data-base-price="200" data-plan="Premium Plan">
+    <h3>Premium Plan</h3>
+    <p>Full-featured websites for larger businesses.</p>
+    <div class="price">£200</div>
+    <button class="select-plan">Select Plan</button>
+  </div>
+</div>
+</main>
+
+<footer>
+<p>&copy; 2025 Frontrunner. All rights reserved.</p>
+</footer>
+
+<script>
+// Conversion rates
+const rates = { GBP:1, USD:1.25, EUR:1.15 };
+const currencySelect = document.getElementById('currencySelect');
+const cards = document.querySelectorAll('.service-card');
+
+function updatePrices(){
+  const currency = currencySelect.value;
+  cards.forEach(card=>{
+    const basePrice = parseFloat(card.dataset.basePrice);
+    const symbol = currency === 'GBP' ? '£' : currency === 'USD' ? '$' : '€';
+    const converted = (basePrice * rates[currency]).toFixed(2);
+    card.querySelector('.price').textContent = `${symbol}${converted}`;
+  });
+}
+
+// Initialize prices
+updatePrices();
+currencySelect.addEventListener('change', updatePrices);
+
+// Select plan button
+cards.forEach(card=>{
+  card.querySelector('.select-plan').addEventListener('click', ()=>{
+    const plan = card.dataset.plan;
+    const currency = currencySelect.value;
+    window.location.href = `get-started.html?plan=${encodeURIComponent(plan)}&currency=${currency}`;
+  });
+});
+</script>
+
+</body>
+</html>

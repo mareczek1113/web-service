@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Started | Frontrunner</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family:'Inter',sans-serif;margin:0;padding:0;background:linear-gradient(to right,#f0f4ff,#fff); display:flex; flex-direction:column; min-height:100vh; }
+header { background:#4f46e5;color:#fff;padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center; }
+header h1 { font-size:1.8rem; }
+main { flex:1; display:flex; justify-content:center; align-items:center; padding:4rem 2rem; }
+.form-container { background:#fff; padding:3rem 2rem; border-radius:16px; box-shadow:0 15px 40px rgba(0,0,0,0.1); max-width:600px; width:100%; position:relative; }
+a.home-btn { display:inline-block; margin-bottom:1.5rem; padding:0.5rem 1rem; background:#4f46e5; color:#fff; border-radius:8px; text-decoration:none; font-weight:600; transition:0.3s; }
+a.home-btn:hover { background:#6366f1; }
+h2 { color:#4f46e5; font-size:2rem; margin-bottom:2rem; text-align:center; }
+form { display:flex; flex-direction:column; gap:1.5rem; }
+.form-group { position:relative; }
+input, textarea, select { width:100%; padding:1rem; border:1px solid #ccc; border-radius:10px; font-size:1rem; outline:none; background:#fff; }
+input:focus, textarea:focus, select:focus { border-color:#4f46e5; box-shadow:0 0 8px rgba(79,70,229,0.2); }
+label { position:absolute; top:50%; left:1rem; transform:translateY(-50%); background:#fff; padding:0 0.25rem; color:#888; pointer-events:none; transition:0.3s; }
+input:focus + label, input:not(:placeholder-shown) + label,
+textarea:focus + label, textarea:not(:placeholder-shown) + label,
+select:focus + label, select:not([value=""]) + label { top:-0.6rem; left:0.8rem; font-size:0.8rem; color:#4f46e5; }
+button { background: linear-gradient(90deg,#4f46e5,#6366f1); color:#fff; padding:1rem; border:none; border-radius:12px; font-weight:600; font-size:1rem; cursor:pointer; transition: all 0.3s ease; }
+button:hover { transform:translateY(-3px); box-shadow:0 10px 20px rgba(79,70,229,0.2); }
+.success-overlay { position:absolute; inset:0; background:rgba(255,255,255,0.95); display:flex; justify-content:center; align-items:center; flex-direction:column; gap:1rem; border-radius:16px; opacity:0; pointer-events:none; transition:opacity 0.5s ease; text-align:center; }
+.success-overlay.active { opacity:1; pointer-events:all; }
+.success-overlay h3 { color:#065f46; font-size:1.5rem; }
+.success-overlay button { background:#4f46e5; color:#fff; padding:0.8rem 1.5rem; border-radius:10px; font-weight:600; cursor:pointer; }
+.success-overlay button:hover { background:#6366f1; }
+#convertedPrice { margin-top:1rem; margin-bottom:1.5rem; font-weight:600; color:#4f46e5; }
+footer { text-align:center; padding:2rem; background:#1f2937; color:#fff; }
+@media(max-width:640px){ main { padding:2rem 1rem; } .form-container { padding:2rem 1.5rem; } }
+</style>
+</head>
+<body>
+
+<header><h1>Frontrunner</h1></header>
+
+<main>
+<div class="form-container">
+<a href="index.html" class="home-btn">Home</a>
+<h2>Start Your Project</h2>
+
+<form id="contactForm" action="https://formspree.io/f/xpqazqnk" method="POST">
+  <!-- Honeypot field for bots -->
+  <input type="text" name="website" style="display:none">
+
+  <div class="form-group">
+    <input type="text" name="name" placeholder=" " required>
+    <label>Your Name</label>
+  </div>
+  <div class="form-group">
+    <input type="email" name="email" placeholder=" " required>
+    <label>Your Email</label>
+  </div>
+  <div class="form-group">
+    <textarea name="message" rows="5" placeholder=" " required></textarea>
+    <label>Your Project Details</label>
+  </div>
+  <div class="form-group">
+    <select name="plan" id="planSelect" required>
+      <option value="" disabled>Select a Plan</option>
+      <option value="Basic Plan" data-base-price="80">Basic Plan - £80</option>
+      <option value="Standard Plan" data-base-price="140">Standard Plan - £140</option>
+      <option value="Premium Plan" data-base-price="200">Premium Plan - £200</option>
+    </select>
+    <label>Selected Plan</label>
+  </div>
+
+  <div class="form-group">
+    <label for="currencySelect">Currency</label>
+    <select id="currencySelect">
+      <option value="GBP">£ GBP</option>
+      <option value="USD">$ USD</option>
+      <option value="EUR">€ EUR</option>
+    </select>
+    <div id="convertedPrice" style="margin-top:1rem;margin-bottom:1.5rem;font-weight:600;color:#4f46e5;"></div>
+  </div>
+
+  <button type="submit" id="submitBtn">Send Message</button>
+</form>
+
+<div class="success-overlay" id="successOverlay">
+  <h3>🎉 Thank you! Your message has been sent.</h3>
+  <button onclick="closeOverlay()">Send Another</button>
+</div>
+
+<script>
+const rates = { GBP:1, USD:1.25, EUR:1.15 };
+const planSelect = document.getElementById('planSelect');
+const currencySelect = document.getElementById('currencySelect');
+const convertedPriceEl = document.getElementById('convertedPrice');
+const form = document.getElementById('contactForm');
+const overlay = document.getElementById('successOverlay');
+const submitBtn = document.getElementById('submitBtn');
+
+// Read URL parameters
+const urlParams = new URLSearchParams(window.location.search);
+const planFromUrl = urlParams.get('plan');
+const currencyFromUrl = urlParams.get('currency') || 'GBP';
+
+// Pre-select plan and currency
+if(planFromUrl){
+  for(let i=0;i<planSelect.options.length;i++){
+    if(planSelect.options[i].value === planFromUrl){
+      planSelect.selectedIndex = i;
+      break;
+    }
+  }
+}
+currencySelect.value = currencyFromUrl;
+
+// Update converted price
+function updateConvertedPrice(){
+  const selectedOption = planSelect.selectedOptions[0];
+  if(selectedOption && selectedOption.dataset.basePrice){
+    const basePrice = parseFloat(selectedOption.dataset.basePrice);
+    const currency = currencySelect.value;
+    const symbol = currency === 'GBP' ? '£' : currency === 'USD' ? '$' : '€';
+    const converted = (basePrice * rates[currency]).toFixed(2);
+    convertedPriceEl.textContent = `Price: ${symbol}${converted}`;
+  } else { convertedPriceEl.textContent = ''; }
+}
+updateConvertedPrice();
+planSelect.addEventListener('change', updateConvertedPrice);
+currencySelect.addEventListener('change', updateConvertedPrice);
+
+// Prevent spam: cooldown timer
+let canSubmit = true;
+const cooldown = 5000; // 5 seconds
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  
+  // Honeypot check
+  if(form.website.value){
+    return; // bot detected, ignore submission
+  }
+
+  if(!canSubmit){
+    alert("Please wait a few seconds before sending again.");
+    return;
+  }
+  canSubmit = false;
+  submitBtn.disabled = true;
+
+  const formData = new FormData(form);
+
+  try{
+    const response = await fetch(form.action, { method:'POST', body:formData, headers:{'Accept':'application/json'} });
+    if(response.ok){
+      overlay.classList.add('active');
+      form.reset();
+      updateConvertedPrice(); // reset displayed price
+    } else {
+      alert("Oops! Something went wrong.");
+    }
+  } catch(err){ alert("Oops! Something went wrong."); }
+
+  // Reset cooldown after 5 seconds
+  setTimeout(()=>{
+    canSubmit = true;
+    submitBtn.disabled = false;
+  }, cooldown);
+});
+
+function closeOverlay(){ overlay.classList.remove('active'); }
+</script>
+
+
+</body>
+</html>
